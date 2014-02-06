@@ -6,6 +6,7 @@ function [ samples, Fs ] = audioReadConvert( fileName, targetFs, stereoToMono,no
 %
 % targetFs (double) - Set target sample rate in Hz
 % (default - 16000Hz)
+% An input of 0 will not convert sampling rate
 %
 % stereoToMono(logical) - Set to true to convert to mono 
 % (default - true)
@@ -33,16 +34,20 @@ if(nargin<4)
     normalize = true;
 end
 
-
-[samples, Fs] = audioread(fileName);
-
-if(Fs~=targetFs)
-    [L,M] = rat(targetFs/Fs);
-    hm = mfilt.firsrc(L,M);
-    samples = filter(hm,samples);
-    Fs = targetFs;
+if verLessThan('matlab', '8.1.0')
+    [samples, Fs] = audioread(fileName);
+else
+    [samples, Fs] = wavread(fileName);
 end
 
+if(targetFs~=0)
+    if(Fs~=targetFs)
+        [L,M] = rat(targetFs/Fs);
+        hm = mfilt.firsrc(L,M);
+        samples = filter(hm,samples);
+        Fs = targetFs;
+    end
+end
 if(stereoToMono)
     samples = mean(samples,2);
 end

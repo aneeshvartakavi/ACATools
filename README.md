@@ -13,3 +13,4 @@ InverseSTFT - Computes inverse STFT using overlap add.
 
 ConvertSampleRate - Convert to a target sample rate using direct-form polyphase FIR filter
 
+CompareSpectrograms - Plot two spectrograms for a visual comparison
